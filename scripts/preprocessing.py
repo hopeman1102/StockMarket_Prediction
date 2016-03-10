@@ -10,7 +10,7 @@ def main(dir_path, output_dir):
 		with open( os.path.join(dir_path, file_name), 'r') as textfile:
 			new_file = open(os.path.join(output_dir, file_name), 'w+')
 			new_list = []
-			new_list.append(['symbol','date','open','high','low','close','volume','adj_close', 'prev_day_diff', '50_day_moving_avg', '10_day_volatility'])
+
 			prev = 0.0
 			diff = 0.0
 			avg = 0.0
@@ -35,14 +35,16 @@ def main(dir_path, output_dir):
 				if count<num_moving_avg:
 					avg = roundup((count * avg + float(row[7]))/ (count + 1))
 				else:
-					avg = roundup((num_moving_avg * avg + float(row[7]) - float(new_list[count + 1 - num_moving_avg][5])) / (num_moving_avg)) 
+					if 'COST' in file_name:
+						print row[7], new_list[count - num_moving_avg][7]					
+					avg = roundup((num_moving_avg * avg + float(row[7]) - float(new_list[count - num_moving_avg][7])) / (num_moving_avg)) 
 
 				prev = float(row[7])
-
+				
 				if count < num_volatile:
 					volatile_avg = roundup((count * volatile_avg + float(row[7]))/ (count + 1))
 				else:
-					volatile_avg = roundup((num_volatile * volatile_avg + float(row[7]) - float(new_list[count + 1- num_volatile][5])) / (num_volatile))
+					volatile_avg = roundup((num_volatile * volatile_avg + float(row[7]) - float(new_list[count - num_volatile][7])) / (num_volatile))
 
 				if count:
 					loop_count = min(count, num_volatile)
@@ -61,6 +63,8 @@ def main(dir_path, output_dir):
 
 				new_list.append(row)
 				curr_volatility = 0.0
+
+			new_list.insert(0, ['symbol','date','open','high','low','close','volume','adj_close', 'prev_day_diff', '50_day_moving_avg', '10_day_volatility'])
 
 			writer = csv.writer(new_file)
 			writer.writerows(new_list)
