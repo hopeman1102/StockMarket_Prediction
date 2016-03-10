@@ -1,3 +1,4 @@
+input/non_params.txt
 scripts/.scrapy/*
 
 # Byte-compiled / optimized / DLL files
