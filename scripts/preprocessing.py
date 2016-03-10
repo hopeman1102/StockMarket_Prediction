@@ -7,9 +7,10 @@ def roundup(var):
 def main(dir_path, output_dir):
 	files = os.listdir(dir_path)
 	for file_name in files:
-		with open(dir_path + '/' + file_name, 'r') as textfile:
-			new_file = open(output_dir + '/' + file_name, 'w+')
+		with open( os.path.join(dir_path, file_name), 'r') as textfile:
+			new_file = open(os.path.join(output_dir, file_name), 'w+')
 			new_list = []
+			new_list.append(['symbol','date','open','high','low','close','volume','adj_close', 'prev_day_diff', '50_day_moving_avg', '10_day_volatility'])
 			prev = 0.0
 			diff = 0.0
 			avg = 0.0
@@ -20,33 +21,44 @@ def main(dir_path, output_dir):
 
 			for count, row in enumerate(reversed(list(csv.reader(textfile)))):
 				if not count:
-					row.append(prev)
+					try:
+						row[8]=prev
+					except Exception, e:
+						row.append(prev)
 				else:
-					diff = roundup(float(row[5]) - float(prev))
-					row.append(diff)
+					diff = roundup(float(row[7]) - float(prev))
+					try:
+						row[8]=diff
+					except Exception, e:
+						row.append(diff)
 				
 				if count<num_moving_avg:
-					avg = roundup((count * avg + float(row[5]))/ (count + 1))
+					avg = roundup((count * avg + float(row[7]))/ (count + 1))
 				else:
-					avg = roundup((num_moving_avg * avg + float(row[5]) - float(new_list[count - num_moving_avg][5])) / (num_moving_avg)) 
+					avg = roundup((num_moving_avg * avg + float(row[7]) - float(new_list[count + 1 - num_moving_avg][5])) / (num_moving_avg)) 
 
-				prev = float(row[5])
+				prev = float(row[7])
 
 				if count < num_volatile:
-					volatile_avg = roundup((count * volatile_avg + float(row[5]))/ (count + 1))
+					volatile_avg = roundup((count * volatile_avg + float(row[7]))/ (count + 1))
 				else:
-					volatile_avg = roundup((num_volatile * volatile_avg + float(row[5]) - float(new_list[count - num_volatile][5])) / (num_volatile))
+					volatile_avg = roundup((num_volatile * volatile_avg + float(row[7]) - float(new_list[count + 1- num_volatile][5])) / (num_volatile))
 
 				if count:
 					loop_count = min(count, num_volatile)
 				
 					for i in range(loop_count):
-						curr_volatility += math.pow((float(row[5]) - volatile_avg), 2)
+						curr_volatility += math.pow((float(row[7]) - volatile_avg), 2)
 
 					curr_volatility = roundup(math.sqrt(curr_volatility / (loop_count))) 
 				
-				row.append(avg)
-				row.append(curr_volatility)
+				try:
+					row[9]=avg
+					row[10]=curr_volatility
+				except Exception, e:
+					row.append(avg)
+					row.append(curr_volatility)
+
 				new_list.append(row)
 				curr_volatility = 0.0
 
