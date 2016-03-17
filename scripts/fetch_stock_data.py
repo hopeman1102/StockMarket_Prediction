@@ -7,11 +7,6 @@ import datetime
 
 from ychartspy.client import YChartsClient
 
-#client = YChartsClient()
-#print client.get_security_prices("SPY", time_length="1")  # Get all price data on the SP500 for the past year
-#print client.get_indicator_prices("USHS", time_length="5")  # Get all US housing starts for the past 5 years
-#print client.get_security_metric("GOOGL", "pe_ratio", start_date="01/06/1913")
-
 def convert(timestamp):
 	return datetime.datetime.fromtimestamp(int(timestamp) / 1e3).strftime('%Y-%m-%d')
 
@@ -20,8 +15,11 @@ def main(symbol_file, parameter_file, output_dir):
 
 	param_list = []
 
+	count = {}
+
 	for parameter in param_fp:
 		param_list.append(parameter.strip())
+		count[parameter.strip()]=0
 
 	client = YChartsClient()
 
@@ -41,7 +39,6 @@ def main(symbol_file, parameter_file, output_dir):
 
 			for parameter in param_list:
 				parameter=parameter.strip()
-				
 				to_write[0].append(parameter)
 
 				try:
@@ -58,6 +55,10 @@ def main(symbol_file, parameter_file, output_dir):
 					if row_obj[0] not in row_info:
 						row_info[row_obj[0]] = {}
 					row_info[row_obj[0]][str(parameter)]=row_obj[1]
+					
+				if count[parameter]==0:
+					count[parameter]=1
+
 
 			new_file = open(os.path.join(output_dir, str(symbol) + '.csv'), 'w+')
 
@@ -66,17 +67,21 @@ def main(symbol_file, parameter_file, output_dir):
 				temp.append(str(symbol))
 				temp.append(convert(key))
 
-				#print row_info[key]
-
-				#if (any )
 				for parameter in param_list:
-					if str(parameter) in row_info[key]:
+					parameter=str(parameter)
+
+					if count[parameter]==0:
+						param_list.remove(parameter)
+						to_write[0].remove(parameter)
+						continue
+
+					if parameter in row_info[key]:
 						#print 'HERE', parameter, key
-						temp.append(row_info[key][str(parameter)])
+						temp.append(row_info[key][parameter])
 						#to_write[-1].append(row_info[key][str(parameter)])
 					else:
 						#print 'NOT ', parameter, row_info[key]
-						temp.append(0)
+						temp.append('NaN')
 				
 				to_write.append(temp)
 
