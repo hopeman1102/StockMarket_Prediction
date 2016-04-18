@@ -35,8 +35,6 @@ def main(dir_path, output_dir):
 				if count<num_moving_avg:
 					avg = roundup((count * avg + float(row[7]))/ (count + 1))
 				else:
-					if 'COST' in file_name:
-						print row[7], new_list[count - num_moving_avg][7]					
 					avg = roundup((num_moving_avg * avg + float(row[7]) - float(new_list[count - num_moving_avg][7])) / (num_moving_avg)) 
 
 				prev = float(row[7])
