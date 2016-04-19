@@ -14,7 +14,7 @@ def interpolate(dataframe, cols_to_interpolate):
     return dataframe
 
 
-def main(dir_path, output_dir):
+def main(dir_path):
     files = os.listdir(dir_path)
     for file_name in files:
         dataframe = pd.read_csv(os.path.join(dir_path, file_name))
@@ -26,4 +26,4 @@ def main(dir_path, output_dir):
 
 
 if __name__=="__main__":
-    main(sys.argv[1], sys.argv[2])
+    main(sys.argv[1])
