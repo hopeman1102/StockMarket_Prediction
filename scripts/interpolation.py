@@ -19,7 +19,7 @@ def main(dir_path):
     for file_name in files:
         dataframe = pd.read_csv(os.path.join(dir_path, file_name))
         dataframe = interpolate(dataframe, \
-            ['high', 'open', 'high', 'low', 'close', 'volume', 'adj_close'])
+            ['high', 'open', 'low', 'close', 'volume', 'adj_close'])
         print dataframe
 
         break
