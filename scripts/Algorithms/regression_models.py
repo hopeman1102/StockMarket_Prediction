@@ -8,6 +8,7 @@ from regression_helpers import load_dataset, addFeatures, \
 import sys
 import os
 import pickle
+import traceback
 
 def main(dir_path, output_dir):
     '''
@@ -75,6 +76,7 @@ def main(dir_path, output_dir):
             scores[symbol] = [mean_squared_errors, r2_scores]
         except Exception, e:
             pass
+            traceback.print_exc()
     
     with open(os.path.join(output_dir, 'scores.pickle'), 'wb') as handle:
         pickle.dump(scores, handle)

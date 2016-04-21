@@ -19,10 +19,12 @@ from sklearn import neighbors
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 #from sklearn.svm import SVR
+from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.svm import SVC
 from sklearn.qda import QDA
 import os
 from sklearn.grid_search import GridSearchCV
+from Neural_Network import NeuralNet
 
 def load_dataset(path_directory, symbol): 
     """
@@ -172,6 +174,12 @@ def benchmark_classifier(clf, X_train, y_train, X_test, y_test):
 
 # REGRESSION
     
+def getFeatures(X_train, y_train, X_test, num_features):
+    ch2 = SelectKBest(chi2, k=5)
+    X_train = ch2.fit_transform(X_train, y_train)
+    X_test = ch2.transform(X_test)
+    return X_train, X_test
+
 def performRegression(dataset, split, symbol, output_dir):
     """
         Performing Regression on 
@@ -184,6 +192,9 @@ def performRegression(dataset, split, symbol, output_dir):
     print('Size of train set: ', train.shape)
     print('Size of test set: ', test.shape)
     
+    #train, test = getFeatures(train[features], \
+    #    train[output], test[features], 16)
+
     out_params = (symbol, output_dir)
 
     output = dataset.columns[0]
@@ -198,26 +209,39 @@ def performRegression(dataset, split, symbol, output_dir):
         KNeighborsRegressor(),
         GradientBoostingRegressor(),
     ]
-        
+
     for classifier in classifiers:
+
         predicted_values.append(benchmark_model(classifier, \
             train, test, features, output, out_params))
+
+    maxiter = 1000
+    batch = 150
+
+    classifier = NeuralNet(50, learn_rate=1e-2)
+
+    predicted_values.append(benchmark_model(classifier, \
+        train, test, features, output, out_params, \
+        fine_tune=False, maxiter=maxiter, SGD=True, batch=batch, rho=0.9))
+    
 
     print('-'*80)
 
     mean_squared_errors = []
+
     r2_scores = []
 
     for pred in predicted_values:
-        mean_squared_errors.append(mean_squared_error(test[output], pred))
-        r2_scores.append(r2_score(test[output], pred))
-
+        mean_squared_errors.append(mean_squared_error(test[output].as_matrix(), \
+            pred.as_matrix()))
+        r2_scores.append(r2_score(test[output].as_matrix(), pred.as_matrix()))
 
     print(mean_squared_errors, r2_scores)
 
     return mean_squared_errors, r2_scores
 
-def benchmark_model(model, train, test, features, output, output_params):
+def benchmark_model(model, train, test, features, output, \
+    output_params, *args, **kwargs):
     '''
         Performs Training and Testing of the Data on the Model.
     '''
@@ -237,10 +261,10 @@ def benchmark_model(model, train, test, features, output, output_params):
 
     symbol, output_dir = output_params
 
-    model.fit(train[features], train[output])
-    predicted_value = model.predict(test[features])
+    model.fit(train[features].as_matrix(), train[output].as_matrix(), *args, **kwargs)
+    predicted_value = model.predict(test[features].as_matrix())
 
-    plt.plot(test[output], color='g', ls='-', label='Actual Value')
+    plt.plot(test[output].as_matrix(), color='g', ls='-', label='Actual Value')
     plt.plot(predicted_value, color='b', ls='--', label='predicted_value Value')
 
     plt.xlabel('Number of Set')
