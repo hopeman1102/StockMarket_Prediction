@@ -20,7 +20,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.ensemble import GradientBoostingClassifier
 #from sklearn.svm import SVR
 from sklearn.feature_selection import SelectKBest, chi2
-from sklearn.svm import SVC
+from sklearn.svm import SVC, SVR
 from sklearn.qda import QDA
 import os
 from sklearn.grid_search import GridSearchCV
@@ -151,7 +151,7 @@ def performClassification(X_train, y_train, X_test, y_test, method, parameters={
     classifiers = [
         RandomForestClassifier(n_estimators=100, n_jobs=-1),
         neighbors.KNeighborsClassifier(),
-        SVC(),
+        SVC(degree=100, C=10000, epsilon=.01),
         AdaBoostRegressor(),
         AdaBoostClassifier(**parameters)(),
         GradientBoostingClassifier(n_estimators=100),
@@ -203,7 +203,7 @@ def performRegression(dataset, split, symbol, output_dir):
 
     classifiers = [
         RandomForestRegressor(n_estimators=10, n_jobs=-1),
-        #SVR(kernel='poly', C=1, epsilon=0.1, gamma=1, degree=2),
+        SVR(C=100000, kernel='rbf', epsilon=0.1, gamma=1, degree=2),
         BaggingRegressor(),
         AdaBoostRegressor(),
         KNeighborsRegressor(),
