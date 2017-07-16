@@ -72,7 +72,7 @@ def addFeatures(dataframe, adjclose, returns, n):
     dataframe[roll_n] = pd.rolling_mean(dataframe[returns], n)
 
     exp_ma = returns[7:] + "ExponentMovingAvg" + str(n)
-    dataframe[exp_ma] = pd.ewma(dataframe[returns], halflife=30)
+    dataframe[exp_ma] = pd.ewma(dataframe[returns], halflife=n)
     
 def mergeDataframes(datasets):
     """
