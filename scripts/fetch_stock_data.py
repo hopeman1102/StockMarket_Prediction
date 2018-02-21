@@ -11,6 +11,14 @@ def convert(timestamp):
 	return datetime.datetime.fromtimestamp(int(timestamp) / 1e3).strftime('%Y-%m-%d')
 
 def main(symbol_file, parameter_file, output_dir):
+	'''
+
+	Params:
+	------------------------
+	parameter_file: This is the path to the file that contains the information that you want to fetch via the stock prediction api like ps_ratio, dividend_yield, etc. An example for this file is in the input directory of the project source directory.
+	symbol_file: This is path to text file with the symbols that you want the output of seperated by newlines.
+	output_dir: path to output directory. In this directory the files will be created and saved as symbol_1.csv, symbol_2.csv, etc.
+	'''
 	param_fp = open(parameter_file, 'r')
 
 	param_list = []
