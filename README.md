@@ -6,8 +6,8 @@ To examine a number of different forecasting techniques to predict future stock 
 ## Setup Instructions
 ```
     $ workon myvirtualenv                                  [Optional]
-	$ pip install -r requirements.txt
-	$ python scripts/Algorithms/regression_models.py <input-dir> <output-dir>
+    $ pip install -r requirements.txt
+    $ python scripts/Algorithms/regression_models.py <input-dir> <output-dir>
 ```
 
 Download the Dataset needed for running the code from [here](https://drive.google.com/open?id=0B2lCmt16L_r3SUtrTjBlRHk3d1E).
