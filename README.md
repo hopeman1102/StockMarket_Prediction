@@ -41,8 +41,6 @@ Download the Dataset needed for running the code from [here](https://drive.googl
 - **Report**: https://github.com/scorpionhiccup/StockPricePrediction/blob/master/Report.pdf
 
 ### References
-- [Scikit-Learn](http://scikit-learn.org/stable/)
-- [Theano](http://deeplearning.net/software/theano/)
 - [Recurrent Neural Networks - LSTM Models](http://colah.github.io/posts/2015-08-Understanding-LSTMs/)
 - [ARIMA Models](http://people.duke.edu/~rnau/411arim.htm)
 - https://github.com/dv-lebedev/google-quote-downloader
@@ -50,3 +48,5 @@ Download the Dataset needed for running the code from [here](https://drive.googl
 - http://www.investopedia.com/articles/basics/09/simplified-measuring-interpreting-volatility.asp
 - [Volatility](http://www.stock-options-made-easy.com/volatility-index.html)
 - https://github.com/dzitkowskik/StockPredictionRNN
+- [Scikit-Learn](http://scikit-learn.org/stable/)
+- [Theano](http://deeplearning.net/software/theano/)
